@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Warehouse Manager{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <span class="theme-icon">🌙</span>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1><a href="{{ url_for('index') }}">Warehouse Manager</a></h1>
+            <p class="subtitle">Manage your warehouses efficiently</p>
+        </header>
+
+        <main>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash-message flash-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Warehouse Manager | Built with Flask</p>
+        </footer>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Update icon
+            const icon = document.querySelector('.theme-icon');
+            icon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // Load saved theme
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const icon = document.querySelector('.theme-icon');
+            icon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        });
+    </script>
+</body>
+</html>

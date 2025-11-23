@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Create Warehouse - Warehouse Manager{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Create New Warehouse</h2>
+    <a href="{{ url_for('index') }}" class="btn btn-tertiary">← Back to List</a>
+</div>
+
+<div class="form-container">
+    <form method="POST" class="warehouse-form">
+        {% if error %}
+        <div class="error-message">{{ error }}</div>
+        {% endif %}
+
+        <div class="form-group">
+            <label for="name">Warehouse Name *</label>
+            <input type="text" id="name" name="name" required placeholder="e.g., Main Warehouse">
+        </div>
+
+        <div class="form-group">
+            <label for="capacity">Capacity *</label>
+            <input type="number" id="capacity" name="capacity" step="0.01" min="0" required placeholder="e.g., 1000.00">
+            <span class="form-hint">Maximum storage capacity</span>
+        </div>
+
+        <div class="form-group">
+            <label for="initial_stock">Initial Stock</label>
+            <input type="number" id="initial_stock" name="initial_stock" step="0.01" min="0" value="0" placeholder="e.g., 0.00">
+            <span class="form-hint">Starting inventory (optional)</span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Create Warehouse</button>
+            <a href="{{ url_for('index') }}" class="btn btn-tertiary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
