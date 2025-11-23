@@ -1,5 +1,5 @@
 """Flask Web Application for Warehouse Management"""
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for
 from warehouse_manager import WarehouseManager
 
 app = Flask(__name__)
@@ -53,8 +53,12 @@ def edit_warehouse(warehouse_id):
         try:
             capacity = float(request.form.get('capacity', 0))
             current_stock = float(request.form.get('current_stock', 0))
-            manager.update_warehouse(warehouse_id, name, capacity, current_stock)
-            return redirect(url_for('view_warehouse', warehouse_id=warehouse_id))
+            manager.update_warehouse(
+                warehouse_id, name, capacity, current_stock
+            )
+            return redirect(
+                url_for('view_warehouse', warehouse_id=warehouse_id)
+            )
         except ValueError:
             return render_template('edit.html', warehouse=warehouse,
                                    error="Invalid number format")

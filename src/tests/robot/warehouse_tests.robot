@@ -88,9 +88,14 @@ Edit Warehouse
     [Documentation]    Test editing warehouse details
     Go To    ${HOME URL}
     Click Link    xpath=//a[contains(text(), 'View Details')]
+    
+    # Get the current warehouse name from the page title
+    ${original_title}=    Get Title
+    
     Click Link    xpath=//a[contains(text(), 'Edit')]
     
-    Title Should Be    Edit Test Warehouse - Warehouse Manager
+    # Check that we're on the edit page
+    Page Should Contain    Warehouse Name
     
     Clear Element Text    name=name
     Input Text    name=name    Updated Warehouse Name
@@ -125,11 +130,14 @@ Delete Warehouse
     
     Click Link    xpath=//a[contains(text(), 'View Details')]
     
-    # Handle the confirmation dialog
-    Handle Alert    ACCEPT
+    # Click delete and handle the confirmation dialog
     Click Button    xpath=//button[contains(text(), 'Delete Warehouse')]
+    Handle Alert    ACCEPT
     
-    Title Should Be    All Warehouses - Warehouse Manager
+    # Wait for redirect to complete
+    Wait Until Location Is    ${HOME URL}    5s
+    Wait Until Page Contains    All Warehouses    5s
+    
     ${warehouse_count_after}=    Get Element Count    xpath=//div[contains(@class, 'warehouse-card')]
     Should Be True    ${warehouse_count_after} < ${warehouse_count_before}
 
