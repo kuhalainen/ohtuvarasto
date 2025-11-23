@@ -6,13 +6,13 @@ A modern warehouse management system with a Flask web interface.
 
 ## Features
 
-- 📦 Create and manage multiple warehouses
-- ➕ Add items to warehouses
-- ➖ Remove items from warehouses
-- ✏️ Edit warehouse details
-- 🗑️ Delete warehouses
-- 🌓 Dark/light mode toggle
-- 📱 Responsive design
+- Create and manage multiple warehouses
+- Add items to warehouses
+- Remove items from warehouses
+- Edit warehouse details
+- Delete warehouses
+- Dark/light mode toggle
+- Responsive design
 
 ## Installation
 
