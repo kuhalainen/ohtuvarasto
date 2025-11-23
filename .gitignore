@@ -3,3 +3,11 @@ __pycache__
 *tmp
 .coverage
 htmlcov
+instance/
+.webassets-cache
+*.db
+*.sqlite
+selenium-screenshot-*.png
+log.html
+output.xml
+report.html
