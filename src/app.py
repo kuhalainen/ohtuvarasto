@@ -136,4 +136,6 @@ def remove_from_warehouse(warehouse_id):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Debug mode should only be enabled in development
+    debug_mode = os.environ.get('FLASK_DEBUG', 'False') == 'True'
+    app.run(debug=debug_mode)
