@@ -1,9 +1,12 @@
 """Flask Web Application for Warehouse Management"""
-from flask import Flask, render_template, request, redirect, url_for
+import os
+from flask import Flask, render_template, request, redirect, url_for, flash
 from warehouse_manager import WarehouseManager
 
 app = Flask(__name__)
-app.secret_key = 'dev-secret-key-change-in-production'
+app.secret_key = os.environ.get(
+    'SECRET_KEY', 'dev-secret-key-change-in-production'
+)
 
 # Initialize the warehouse manager
 manager = WarehouseManager()
@@ -53,12 +56,16 @@ def edit_warehouse(warehouse_id):
         try:
             capacity = float(request.form.get('capacity', 0))
             current_stock = float(request.form.get('current_stock', 0))
-            manager.update_warehouse(
+            success, message = manager.update_warehouse(
                 warehouse_id, name, capacity, current_stock
             )
-            return redirect(
-                url_for('view_warehouse', warehouse_id=warehouse_id)
-            )
+            if success:
+                flash(message, 'success')
+                return redirect(
+                    url_for('view_warehouse', warehouse_id=warehouse_id)
+                )
+            return render_template('edit.html', warehouse=warehouse,
+                                   error=message)
         except ValueError:
             return render_template('edit.html', warehouse=warehouse,
                                    error="Invalid number format")
@@ -77,10 +84,26 @@ def delete_warehouse(warehouse_id):
 def add_to_warehouse(warehouse_id):
     """Add items to a warehouse"""
     try:
-        amount = float(request.form.get('amount', 0))
-        manager.add_to_warehouse(warehouse_id, amount)
+        amount_str = request.form.get('amount')
+        if not amount_str:
+            flash('Please enter an amount', 'error')
+            return redirect(
+                url_for('view_warehouse', warehouse_id=warehouse_id)
+            )
+
+        amount = float(amount_str)
+        if amount <= 0:
+            flash('Amount must be greater than zero', 'error')
+            return redirect(
+                url_for('view_warehouse', warehouse_id=warehouse_id)
+            )
+
+        if manager.add_to_warehouse(warehouse_id, amount):
+            flash(f'Successfully added {amount:.2f} items', 'success')
+        else:
+            flash('Failed to add items', 'error')
     except ValueError:
-        pass
+        flash('Invalid amount format', 'error')
     return redirect(url_for('view_warehouse', warehouse_id=warehouse_id))
 
 
@@ -88,10 +111,27 @@ def add_to_warehouse(warehouse_id):
 def remove_from_warehouse(warehouse_id):
     """Remove items from a warehouse"""
     try:
-        amount = float(request.form.get('amount', 0))
-        manager.remove_from_warehouse(warehouse_id, amount)
+        amount_str = request.form.get('amount')
+        if not amount_str:
+            flash('Please enter an amount', 'error')
+            return redirect(
+                url_for('view_warehouse', warehouse_id=warehouse_id)
+            )
+
+        amount = float(amount_str)
+        if amount <= 0:
+            flash('Amount must be greater than zero', 'error')
+            return redirect(
+                url_for('view_warehouse', warehouse_id=warehouse_id)
+            )
+
+        removed = manager.remove_from_warehouse(warehouse_id, amount)
+        if removed > 0:
+            flash(f'Successfully removed {removed:.2f} items', 'success')
+        else:
+            flash('Failed to remove items', 'error')
     except ValueError:
-        pass
+        flash('Invalid amount format', 'error')
     return redirect(url_for('view_warehouse', warehouse_id=warehouse_id))
 
 

@@ -29,14 +29,29 @@ class WarehouseManager:
         return list(self.warehouses.values())
 
     def update_warehouse(self, warehouse_id, name, capacity, current_stock):
-        """Update a warehouse's name and capacity"""
-        if warehouse_id in self.warehouses:
-            warehouse = self.warehouses[warehouse_id]
-            warehouse['name'] = name
-            # Create a new Varasto with updated values
-            warehouse['varasto'] = Varasto(capacity, current_stock)
-            return True
-        return False
+        """Update a warehouse's name and capacity
+
+        Returns a tuple (success, message) where success is a boolean
+        and message is a string describing the result.
+        """
+        if warehouse_id not in self.warehouses:
+            return False, "Warehouse not found"
+
+        warehouse = self.warehouses[warehouse_id]
+        warehouse['name'] = name
+
+        # Check if current_stock exceeds capacity
+        if current_stock > capacity:
+            message = (
+                f"Current stock ({current_stock}) exceeds "
+                f"capacity ({capacity}). "
+                "Stock will be capped to capacity if you continue."
+            )
+            return False, message
+
+        # Create a new Varasto with updated values
+        warehouse['varasto'] = Varasto(capacity, current_stock)
+        return True, "Warehouse updated successfully"
 
     def delete_warehouse(self, warehouse_id):
         """Delete a warehouse"""
